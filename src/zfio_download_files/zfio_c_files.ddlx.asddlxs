@@ -1,0 +1,50 @@
+@Metadata.layer:  #CUSTOMER
+
+@UI.headerInfo: { typeName: 'Files',
+                  typeNamePlural: 'File',
+                  title: { type: #STANDARD, label: 'File', value: 'FileName' } }
+
+@UI.presentationVariant: [ { sortOrder: [ { by: 'LocalCreatedAt', direction: #DESC } ],
+                             visualizations: [ { type: #AS_LINEITEM } ] } ]
+
+annotate entity ZFIO_C_FILES
+    with 
+{
+
+ @UI.facet: [ {  id: 'idFile', type: #COLLECTION, label: 'File', position: 10 },
+               { id: 'GeneralInfo',
+                 parentId: 'idFile',
+                 type: #IDENTIFICATION_REFERENCE,
+                 label: 'General Information',
+                 position: 10 }
+               ]
+@UI.hidden: true
+ FileUuid;
+ 
+ @UI.identification: [ { position: 10 } ]
+ @UI.lineItem: [ { position: 10, importance: #HIGH } ]
+ @UI.selectionField: [ { position: 10 } ]
+ FileName;
+ 
+  @UI.identification: [ { position: 20 } ]
+  @UI.lineItem: [ { position: 20, importance: #HIGH } ]
+ FileContent;
+ 
+ @UI.identification: [ { position: 30 } ]
+ @UI.lineItem: [ { position: 30, importance: #HIGH } ]
+ @UI.selectionField: [ { position: 30 } ]
+ FileMimetype;
+ 
+ 
+ 
+ @UI.identification: [ { position: 40 } ]
+ @UI.lineItem: [ { position: 40, importance: #HIGH } ]
+ @UI.selectionField: [ { position: 40 } ]
+ LocalCreatedBy;
+ 
+ @UI.identification: [ { position: 50 } ]
+ @UI.lineItem: [ { position: 50, importance: #HIGH } ]
+ @UI.selectionField: [ { position: 50 } ]
+ LocalCreatedAt;
+    
+}

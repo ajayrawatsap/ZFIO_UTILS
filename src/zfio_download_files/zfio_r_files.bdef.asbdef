@@ -1,0 +1,26 @@
+managed implementation in class zbp_fio_r_files unique;
+strict ( 2 );
+
+define behavior for ZFIO_R_FILES alias Files
+persistent table zfio_files
+lock master
+authorization master ( instance )
+//etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+  field (numbering : managed, readonly ) FileUuid;
+
+  mapping for zfio_files
+
+  {
+  FileContent = file_content;
+  FileMimetype = file_mimetype;
+  FileName = file_name;
+  FileUuid = file_uuid;
+  LocalCreatedAt = local_created_at;
+  LocalCreatedBy = local_created_by;
+
+  }
+}

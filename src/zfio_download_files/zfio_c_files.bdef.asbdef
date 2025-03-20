@@ -1,0 +1,9 @@
+projection;
+strict ( 2 );
+
+define behavior for ZFIO_C_FILES alias City
+{
+  use create;
+  use update;
+  use delete;
+}
