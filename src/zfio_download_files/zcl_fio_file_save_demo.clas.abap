@@ -11,7 +11,7 @@ CLASS zcl_fio_file_save_demo DEFINITION
     METHODS:
       convert_to_csv
         IMPORTING
-          it_data       TYPE STANDARD TABLE
+          data       TYPE STANDARD TABLE
         RETURNING
           VALUE(rv_csv) TYPE string.
 ENDCLASS.
@@ -98,85 +98,74 @@ CLASS zcl_fio_file_save_demo IMPLEMENTATION.
   ENDMETHOD.
   METHOD convert_to_csv.
 
-    TYPES: BEGIN OF ty_field_info,
-             fieldname TYPE string,
-           END OF ty_field_info.
+* Warning: AI Generated code, use at your own risk
 
-    TYPES: ty_field_info_tab TYPE STANDARD TABLE OF ty_field_info WITH EMPTY KEY.
 
-    DATA: ls_data       TYPE REF TO data,
-          lt_fieldcat   TYPE ty_field_info_tab,
-          ls_fieldcat   TYPE ty_field_info,
-          lv_field_name TYPE string,
-          lv_value      TYPE string,
-          lv_csv_header TYPE string,
-          lv_csv_row    TYPE string,
-          lv_comma      TYPE string VALUE ','.
+ DATA: lt_components TYPE cl_abap_structdescr=>component_table,
+        lo_tabdescr   TYPE REF TO cl_abap_tabledescr,
+        lo_strucdescr TYPE REF TO cl_abap_structdescr,
+        lv_header     TYPE string,
+        lv_value      TYPE string,
+        lv_line       TYPE string.
 
-    DATA: lo_struct_descr TYPE REF TO cl_abap_structdescr,
-          lt_components   TYPE cl_abap_structdescr=>component_table,
-          ls_component    TYPE cl_abap_structdescr=>component,
-          lo_data_ref     TYPE REF TO data,
-          lv_len          TYPE i.
+  FIELD-SYMBOLS: <ls_data>      TYPE any,
+                 <lv_value>     TYPE any,
+                 <ls_component> LIKE LINE OF lt_components.
 
-    FIELD-SYMBOLS: <fs_data>  TYPE any,
-                   <fs_field> TYPE any.
+  " Get table description and its components (columns)
+  lo_tabdescr ?= cl_abap_typedescr=>describe_by_data( data ).
+  lo_strucdescr ?= lo_tabdescr->get_table_line_type( ).
+  lt_components = lo_strucdescr->get_components( ).
 
-    IF it_data IS INITIAL.
-      rv_csv = ''.
-      RETURN.
+  " Create header row with column names
+  LOOP AT lt_components ASSIGNING <ls_component>.
+    IF sy-tabix > 1.
+      lv_header = lv_header && `,`.
     ENDIF.
+    lv_header = lv_header && <ls_component>-name.
+  ENDLOOP.
 
-    CREATE DATA lo_data_ref LIKE LINE OF it_data.
-    ASSIGN lo_data_ref->* TO <fs_data>.
+  " Add header to the result
+  rv_csv = lv_header && cl_abap_char_utilities=>newline.
 
-    lo_struct_descr ?= cl_abap_typedescr=>describe_by_data_ref( lo_data_ref ).
-    lt_components = lo_struct_descr->get_components( ).
+  " Process each row in the table
+  LOOP AT data ASSIGNING <ls_data>.
+    CLEAR lv_line.
 
-    LOOP AT lt_components INTO ls_component.
-      ls_fieldcat-fieldname = ls_component-name.
-      APPEND ls_fieldcat TO lt_fieldcat.
-    ENDLOOP.
-
-    LOOP AT lt_fieldcat INTO ls_fieldcat.
-      lv_field_name = ls_fieldcat-fieldname.
-      IF lv_csv_header IS NOT INITIAL.
-        lv_csv_header = lv_csv_header && lv_comma.
+    " Process each column in the row
+    LOOP AT lt_components ASSIGNING <ls_component>.
+      " Add comma separator between columns
+      IF sy-tabix > 1.
+        lv_line = lv_line && `,`.
       ENDIF.
-      lv_csv_header = lv_csv_header && lv_field_name.
-    ENDLOOP.
 
-    rv_csv = lv_csv_header && cl_abap_char_utilities=>cr_lf.
+      " Get the field value
+      ASSIGN COMPONENT <ls_component>-name OF STRUCTURE <ls_data> TO <lv_value>.
+      IF sy-subrc = 0.
+        " Convert the value to string
+        lv_value = condense( |{ <lv_value> }| ).
 
-    LOOP AT it_data ASSIGNING <fs_data>.
-      CLEAR lv_csv_row.
-      LOOP AT lt_fieldcat INTO ls_fieldcat.
-        lv_field_name = ls_fieldcat-fieldname.
-        ASSIGN COMPONENT lv_field_name OF STRUCTURE <fs_data> TO <fs_field>.
-        lv_value = <fs_field>.
-
-        " Escape commas and double quotes
-        IF lv_value CS ',' OR lv_value CS '"'.
+        " Check if value contains special characters that need quoting
+        IF lv_value CS ',' OR lv_value CS '"' OR lv_value CS cl_abap_char_utilities=>newline.
+          " Escape any double quotes by doubling them
           REPLACE ALL OCCURRENCES OF '"' IN lv_value WITH '""'.
-          CONCATENATE '"' lv_value '"' INTO lv_value.
+          " Enclose in double quotes
+          lv_value = |"{ lv_value }"|.
         ENDIF.
 
-        IF lv_csv_row IS NOT INITIAL.
-          lv_csv_row = lv_csv_row && lv_comma.
-        ENDIF.
-        lv_csv_row = lv_csv_row && lv_value.
-      ENDLOOP.
-      rv_csv = rv_csv && lv_csv_row && cl_abap_char_utilities=>cr_lf.
+        lv_line = lv_line && lv_value.
+      ENDIF.
     ENDLOOP.
 
-    CONDENSE rv_csv NO-GAPS. "Remove trailing spaces and newlines
+    " Add the row to the result
+    rv_csv = rv_csv && lv_line && cl_abap_char_utilities=>newline.
+  ENDLOOP.
 
-*    REPLACE ALL OCCURRENCES OF cl_abap_char_utilities=>cr_lf AT END OF rv_csv WITH ''.
+  " Remove the last newline
+  IF strlen( rv_csv ) >= strlen( cl_abap_char_utilities=>newline ).
+    rv_csv = substring( val = rv_csv off = 0 len = strlen( rv_csv ) - strlen( cl_abap_char_utilities=>newline ) ).
+  ENDIF.
 
-*    lv_len = strlen( rv_csv ).
-*    IF lv_len >= 2 AND rv_csv+lv_len-2(2) = cl_abap_char_utilities=>cr_lf.
-*      rv_csv = rv_csv(lv_len - 2).
-*    ENDIF.
 
   ENDMETHOD.
 
