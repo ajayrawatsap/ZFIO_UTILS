@@ -1,7 +1,6 @@
 CLASS zcl_fio_file_save_demo DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+  PUBLIC FINAL
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
 
@@ -82,7 +81,7 @@ CLASS zcl_fio_file_save_demo IMPLEMENTATION.
     DATA(csv_string) = convert_to_csv( sample_data  ).
 
     DATA(books_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( csv_string ).
-    files = VALUE #( ( file_mimetype = 'text/json' file_name = 'books.csv' file_content = books_xtring ) ).
+    files = VALUE #( ( file_mimetype = 'text/csv' file_name = 'books.csv' file_content = books_xtring ) ).
     TRY.
         file_save_obj->create_files( files = files ).
         out->write( 'Records Updated' ).
