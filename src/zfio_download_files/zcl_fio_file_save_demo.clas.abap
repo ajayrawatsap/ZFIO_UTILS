@@ -18,10 +18,7 @@ ENDCLASS.
 
 
 CLASS zcl_fio_file_save_demo IMPLEMENTATION.
-
-
   METHOD if_oo_adt_classrun~main.
-
     TYPES: BEGIN OF sample_row,
 
              book_name TYPE c LENGTH 128,
@@ -29,71 +26,30 @@ CLASS zcl_fio_file_save_demo IMPLEMENTATION.
              rating    TYPE p LENGTH 2 DECIMALS 2,
            END OF sample_row.
 
-    DATA: file_save_obj TYPE REF TO zfio_files_save_to_db,
-          files         TYPE zfio_tt_files,
-          sample_data   TYPE STANDARD TABLE OF sample_row.
-
-    file_save_obj = NEW #( ).
-
-    TRY.
-        file_save_obj->create_files( files = files ).
-      CATCH zcm_fio_checks INTO DATA(error).
-
-        out->write( error->get_text(  ) ).
-
-    ENDTRY.
-
-    files = VALUE #( ( file_mimetype = ' ' file_name = 'test' file_content = 'ABCD' ) ).
-    TRY.
-        file_save_obj->create_files( files = files ).
-      CATCH zcm_fio_checks INTO error.
-
-        out->write( error->get_text(  ) ).
-
-    ENDTRY.
-
-
-    files = VALUE #( ( file_mimetype = 'text' file_name = 'test' file_content = '' ) ).
-
-    TRY.
-        file_save_obj->create_files( files = files ).
-      CATCH zcm_fio_checks INTO error.
-
-        out->write( error->get_text(  ) ).
-    ENDTRY.
-
-    files = VALUE #( ( file_mimetype = 'Text' file_name = ' ' file_content = 'ABCD' ) ).
-    TRY.
-        file_save_obj->create_files( files = files ).
-      CATCH zcm_fio_checks INTO error.
-
-        out->write( error->get_text(  ) ).
-
-    ENDTRY.
-
+    DATA files       TYPE zfio_tt_files.
+    DATA sample_data TYPE STANDARD TABLE OF sample_row.
 
     sample_data = VALUE #(
-    (  book_name = 'The Psychology of Money'  author = 'Morgan Housel'  rating = '4.3' )
-    (  book_name = 'The Millionaire Next Door'  author = 'Thomas J. Stanley, William D. Danko'  rating = '4.04' )
-    (  book_name = 'Thinking, Fast and Slow'  author = 'Daniel Kahneman'  rating = '4.17' )
-    ).
+        (  book_name = 'The Psychology of Money'  author = 'Morgan Housel'  rating = '4.3' )
+        (  book_name = 'The Millionaire Next Door'  author = 'Thomas J. Stanley, William D. Danko'  rating = '4.04' )
+        (  book_name = 'Thinking, Fast and Slow'  author = 'Daniel Kahneman'  rating = '4.17' ) ).
 
     DATA(csv_string) = convert_to_csv( sample_data  ).
 
     DATA(books_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( csv_string ).
+
+
     files = VALUE #( ( file_mimetype = 'text/csv' file_name = 'books.csv' file_content = books_xtring ) ).
+    DATA(file_save_obj) = NEW zfio_files_save_to_db( ).
+
     TRY.
         file_save_obj->create_files( files = files ).
-        out->write( 'Records Updated' ).
-      CATCH zcm_fio_checks INTO error.
+        out->write( 'Records Updated Use Service Binding ZFIO_UI_FILES_OV4 to Launch the Fiori App' ).
+      CATCH zcm_fio_checks INTO DATA(fio_error).
 
-        out->write( error->get_text(  ) ).
+        out->write( fio_error->get_text( ) ).
 
     ENDTRY.
-
-*    DELETE FROM zfio_files WHERE file_uuid = '0E64B2B698161FD081ABA6AFAD20084B'.
-
-
   ENDMETHOD.
   METHOD convert_to_csv.
 
