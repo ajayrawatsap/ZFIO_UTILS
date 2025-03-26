@@ -1,6 +1,6 @@
 
 
-# ABAP BTP on Cloud, Download Files
+# ABAP BTP Cloud, Download files from ABAP program to local PC
 
 In the ABAP BTP cloud environment with Eclipse, there is no known way of downloading a file from an ABAP program to a local PC. The on-premise solutions like using `cl_gui_frontend_services` do not work in ABAP cloud with Eclipse ADT. This ABAP repository builds the functionality in two steps:
 
