@@ -10,7 +10,7 @@ Save the file contents as `RAWSTRING` in database table `zfio_files`.
 ## Step 2
 Use table `zfio_files` to generate an ABAP RAP based Fiori elements UI.
 
-The Fiori application streams the contents of the file on the UI as an attachment from where users can download the file.
+The Fiori application streams the contents of the file from database on the UI as an attachment from where users can download the file.
 
 ## Implementation Details
 - **Database Storage**: Files are stored in the `zfio_files` table as `RAWSTRING`.
