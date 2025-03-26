@@ -57,4 +57,4 @@ The Fiori application streams the contents of the file on the UI as an attachmen
   ```
 
    - Access the Fiori application to view and download the files using service binding **ZFIO_UI_FILES_OV4** .
-     ![OData Service](ZFIO_UTILS/screenshots/odataService.png)
+     ![OData Service](screenshots/odataService.png)
