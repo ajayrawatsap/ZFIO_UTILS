@@ -19,7 +19,7 @@ The Fiori application streams the contents of the file on the UI as an attachmen
 
 ## Usage
 To use this functionality:
-- 1. Store your file content using the provided ABAP class  **zfio_files_save_to_db**.
+-  Store your file content using the provided ABAP class  **zfio_files_save_to_db**.
    Check demo class **zcl_fio_file_save_demo** which can be run as application with eclipse adt
    
    ```abap
@@ -56,5 +56,5 @@ To use this functionality:
     ENDTRY.
   ```
 
- - 2. Access the Fiori application to view and download the files using service binding **ZFIO_UI_FILES_OV4** .
-   ![OData Service](ZFIO_UTILS/screenshots/odataService.png)
+ -   Access the Fiori application to view and download the files using service binding **ZFIO_UI_FILES_OV4** .
+     ![OData Service](ZFIO_UTILS/screenshots/odataService.png)
