@@ -19,8 +19,8 @@ The Fiori application streams the contents of the file on the UI as an attachmen
 
 ## Usage
 #### To use this functionality:
-- Store your file content to database using the provided ABAP class  **ZFIO_FILES_SAVE_TO_DB**.
-   Check demo class **ZCL_FIO_FILE_SAVE_DEMO** which can be run as application with eclipse adt
+- Store your file content to database using the provided ABAP class  `ZFIO_FILES_SAVE_TO_DB`.
+   Check demo class `ZCL_FIO_FILE_SAVE_DEMO` which can be run as application with eclipse adt
    
    ```abap
    TYPES: BEGIN OF sample_row,
