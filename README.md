@@ -20,7 +20,7 @@ The Fiori application streams the contents of the file from database on the UI a
 ## Usage
 #### To use this functionality:
 - Clone or Download this repo  using [abapGit Plugin](https://developers.sap.com/tutorials/abap-install-abapgit-plugin..html)
-- Store your file content to database using the provided ABAP class  `ZFIO_FILES_SAVE_TO_DB`.
+- Store file contents in your ABAP program to database using the provided ABAP class  `ZFIO_FILES_SAVE_TO_DB`.
    Check demo class `ZCL_FIO_FILE_SAVE_DEMO` which can be run as application with eclipse adt
    
    ```abap
