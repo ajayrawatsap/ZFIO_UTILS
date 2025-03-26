@@ -60,6 +60,6 @@ The Fiori application streams the contents of the file from database on the UI a
    - Access the Fiori application to view and download the files using service binding  `ZFIO_UI_FILES_OV4` .
      ![OData Service](screenshots/odataService.png)
      
-   - Download the file form Fiori UI by clicking on field *Attachment*
+   - Download the file from Fiori UI by clicking on field *Attachment*
      ![FioriApp](screenshots/FioriApp.png)
    
