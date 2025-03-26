@@ -55,4 +55,6 @@ To use this functionality:
     ENDTRY.
 
   ```
-3. Access the Fiori application to view and download the files using service binding **ZFIO_UI_FILES_OV4** .
+
+2. Access the Fiori application to view and download the files using service binding **ZFIO_UI_FILES_OV4** .
+   ![OData Service](ZFIO_UTILS/screenshots/odataService.png)
