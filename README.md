@@ -24,8 +24,8 @@ The Fiori application streams the contents of the file from database on the UI a
    Check demo class `ZCL_FIO_FILE_SAVE_DEMO` which can be run as application with eclipse adt
    
    ```abap
-   TYPES: BEGIN OF sample_row,
-
+   METHOD if_oo_adt_classrun~main.
+    TYPES: BEGIN OF sample_row,
              book_name TYPE c LENGTH 128,
              author    TYPE c LENGTH 128,
              rating    TYPE p LENGTH 2 DECIMALS 2,
@@ -40,21 +40,23 @@ The Fiori application streams the contents of the file from database on the UI a
         (  book_name = 'Thinking, Fast and Slow'  author = 'Daniel Kahneman'  rating = '4.17' ) ).
 
     DATA(csv_string) = convert_to_csv( sample_data  ).
+    DATA(json_string) = convert_to_json( sample_data ).
 
-    DATA(books_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( csv_string ).
+    DATA(books_csv_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( csv_string ).
+    DATA(books_json_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( json_string ).
 
+    files = VALUE #( ( file_mimetype = 'text/csv' file_name = 'books.csv' file_content = books_csv_xtring )
+                     ( file_mimetype = 'application/json' file_name = 'books.json' file_content = books_json_xtring ) ).
 
-    files = VALUE #( ( file_mimetype = 'text/csv' file_name = 'books.csv' file_content = books_xtring ) ).
     DATA(file_save_obj) = NEW zfio_files_save_to_db( ).
 
     TRY.
         file_save_obj->create_files( files = files ).
         out->write( 'Records Updated Use Service Binding ZFIO_UI_FILES_OV4 to Launch the Fiori App' ).
       CATCH zcm_fio_checks INTO DATA(fio_error).
-
         out->write( fio_error->get_text( ) ).
-
     ENDTRY.
+  ENDMETHOD.
   ```
 
 - Access the Fiori application to view and download the files using service binding  `ZFIO_UI_FILES_OV4` .
