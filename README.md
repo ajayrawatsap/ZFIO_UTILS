@@ -67,4 +67,4 @@ The Fiori application streams the contents of the file from database on the UI a
    
 ## Restrictions:
 - This repo does not support converting data to CSV or JSON as shown in the demo class. The demo examples are for testing purposes only.
-- This example has only been tested on ABAP BTP cloud environments and may not work in on-premise systems.
+- This repo has only been tested on ABAP BTP cloud environment and may not work in on-premise systems.
