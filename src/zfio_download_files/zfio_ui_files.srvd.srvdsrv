@@ -1,4 +1,4 @@
 @EndUserText.label: 'Service Definition for ZFIO_C_FILES'
 define service ZFIO_UI_FILES {
-  expose ZFIO_C_FILES;
+  expose ZFIO_C_FILES as Files;
 }

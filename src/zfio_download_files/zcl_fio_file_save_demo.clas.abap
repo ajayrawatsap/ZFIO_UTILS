@@ -12,7 +12,13 @@ CLASS zcl_fio_file_save_demo DEFINITION
         IMPORTING
           data       TYPE STANDARD TABLE
         RETURNING
-          VALUE(rv_csv) TYPE string.
+          VALUE(rv_csv) TYPE string,
+
+      convert_to_json
+        IMPORTING
+          data       TYPE STANDARD TABLE
+        RETURNING
+          VALUE(rv_json) TYPE string.
 ENDCLASS.
 
 
@@ -35,11 +41,14 @@ CLASS zcl_fio_file_save_demo IMPLEMENTATION.
         (  book_name = 'Thinking, Fast and Slow'  author = 'Daniel Kahneman'  rating = '4.17' ) ).
 
     DATA(csv_string) = convert_to_csv( sample_data  ).
+    data(json_string) = convert_to_json( sample_data ).
 
-    DATA(books_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( csv_string ).
+    DATA(books_csv_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( csv_string ).
+    DATA(books_json_xtring) = cl_abap_conv_codepage=>create_out( codepage = `UTF-8` )->convert( json_string ).
 
+    files = VALUE #(  ( file_mimetype = 'text/csv' file_name = 'books.csv' file_content = books_csv_xtring )
+                       ( file_mimetype = 'application/json' file_name = 'books.json' file_content = books_json_xtring ) ).
 
-    files = VALUE #( ( file_mimetype = 'text/csv' file_name = 'books.csv' file_content = books_xtring ) ).
     DATA(file_save_obj) = NEW zfio_files_save_to_db( ).
 
     TRY.
@@ -122,6 +131,21 @@ CLASS zcl_fio_file_save_demo IMPLEMENTATION.
   ENDIF.
 
 
+  ENDMETHOD.
+
+  METHOD convert_to_json.
+*  Warning: AI Generated code, use at your own risk
+  TRY.
+      " Convert data to JSON using the UI2 JSON class
+      rv_json = /ui2/cl_json=>serialize(
+                  data             = data
+                  pretty_name      = /ui2/cl_json=>pretty_mode-camel_case
+                  compress         = abap_false ).
+
+    CATCH cx_sy_move_cast_error INTO DATA(lx_root).
+      " Handle exceptions
+     rv_json = | "error":"{ escape( val = lx_root->get_text( ) format = cl_abap_format=>e_json_string ) }" |.
+  ENDTRY.
   ENDMETHOD.
 
 ENDCLASS.
