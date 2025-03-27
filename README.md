@@ -65,3 +65,6 @@ The Fiori application streams the contents of the file from database on the UI a
 - Download the file from Fiori UI by clicking on field *Attachment*
      ![FioriApp](screenshots/FioriApp.png)
    
+## Restrictions:
+- This repo does not support converting data to CSV or JSON as shown in the demo class. The demo examples are for testing purposes only.
+- This example has only been tested on ABAP BTP cloud environments and may not work in on-premise systems.
